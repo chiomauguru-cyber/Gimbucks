@@ -23,9 +23,11 @@ import LiveConnector from './components/LiveConnector';
 import GimbuckSetter from './components/GimbuckSetter';
 import Terminal from './components/Terminal';
 import KitViewer from './components/KitViewer';
+import LandingPage from './components/LandingPage';
 
 export default function App() {
   // --- State ---
+  const [isInitialized, setIsInitialized] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     gimbucks: 0,
     xp: 0,
@@ -50,10 +52,12 @@ export default function App() {
   };
 
   useEffect(() => {
-    addLog('SYSTEM_BOOT: Gimkit Live Tool v4.0.0 initialized.', 'info');
-    addLog('NETWORK: Ready for live game interception.', 'success');
-    addLog('MODE: LIVE_MODE_ACTIVE', 'warning');
-  }, []);
+    if (isInitialized) {
+      addLog('SYSTEM_BOOT: Gimkit Live Tool v4.0.0 initialized.', 'info');
+      addLog('NETWORK: Ready for live game interception.', 'success');
+      addLog('MODE: LIVE_MODE_ACTIVE', 'warning');
+    }
+  }, [isInitialized]);
 
   const handleSetGimbucks = (amount: number) => {
     addLog(`INJECTING: Payload [${amount} Gimbucks] to memory_offset_0x7FF...`, 'info');
@@ -96,6 +100,10 @@ export default function App() {
   };
 
   // --- Render ---
+  if (!isInitialized) {
+    return <LandingPage onStart={() => setIsInitialized(true)} />;
+  }
+
   return (
     <div className="min-h-screen bg-[#FFF5E4] text-black p-4 md:p-8 selection:bg-black selection:text-white font-dynapuff">
       {/* Header */}
