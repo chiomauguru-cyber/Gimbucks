@@ -1,4 +1,4 @@
-import { Activity, Database, Zap } from 'lucide-react';
+import { Activity, Database, Zap, Globe } from 'lucide-react';
 import { GameState } from '../types';
 
 interface StatsCardProps {
@@ -12,7 +12,7 @@ export default function StatsCard({ gameState }: StatsCardProps) {
         <Database className="w-24 h-24 text-black" />
       </div>
       <h2 className="text-sm uppercase font-black mb-8 flex items-center gap-3 text-black/60">
-        <Activity className="w-5 h-5" /> Account Metrics
+        <Activity className="w-5 h-5" /> Account & Game Metrics
       </h2>
       
       <div className="space-y-10">
@@ -26,34 +26,60 @@ export default function StatsCard({ gameState }: StatsCardProps) {
           </div>
         </div>
 
-        <div>
-          <p className="text-xs uppercase font-black opacity-40 mb-2">Experience Points</p>
-          <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-black text-black tabular-nums">
-              {gameState.xp.toLocaleString()}
-            </span>
-            <span className="text-sm font-black opacity-40">XP</span>
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <p className="text-xs uppercase font-black opacity-40 mb-2">Experience</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-black text-black tabular-nums">{gameState.xp.toLocaleString()}</span>
+              <span className="text-[10px] font-black opacity-40">XP</span>
+            </div>
           </div>
-          <div className="w-full h-4 bg-black/10 rounded-full mt-3 overflow-hidden border-2 border-black">
-            <div 
-              className="h-full bg-black transition-all duration-1000" 
-              style={{ width: `${(gameState.xp % 1000) / 10}%` }} 
-            />
+          <div>
+            <p className="text-xs uppercase font-black opacity-40 mb-2">Level</p>
+            <span className="text-2xl font-black italic text-black">LVL {gameState.level}</span>
           </div>
         </div>
 
-        <div className="flex justify-between items-end">
-          <div>
-            <p className="text-xs uppercase font-black opacity-40 mb-2">Level</p>
-            <span className="text-4xl font-black italic text-black">LVL {gameState.level}</span>
+        {gameState.liveGame ? (
+          <>
+            <div>
+              <p className="text-xs uppercase font-black opacity-40 mb-2">Connected Game</p>
+              <div className="flex items-center gap-3">
+                <span className="text-6xl font-black text-black tabular-nums drop-shadow-[4px_4px_0px_rgba(255,255,255,1)]">
+                  {gameState.liveGame.gameCode}
+                </span>
+                <Globe className="w-8 h-8 text-black" />
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase font-black opacity-40 mb-2">Game Mode</p>
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-black text-black uppercase">
+                  {gameState.liveGame.type}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-xs uppercase font-black opacity-40 mb-2">Kit ID</p>
+                <span className="text-sm font-black italic text-black font-mono">{gameState.liveGame.kitId}</span>
+              </div>
+              <div className="text-right">
+                <p className="text-xs uppercase font-black opacity-40 mb-2">Status</p>
+                <span className={`text-sm px-4 py-1 border-4 font-black rounded-full border-black text-black bg-white`}>
+                  {gameState.liveGame.active ? 'ACTIVE' : 'INACTIVE'}
+                </span>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="py-20 text-center opacity-40">
+            <p className="text-xl font-black uppercase tracking-widest">No Live Data</p>
+            <p className="text-xs font-bold mt-2">Connect to a game to intercept metrics</p>
           </div>
-          <div className="text-right">
-            <p className="text-xs uppercase font-black opacity-40 mb-2">Integrity</p>
-            <span className={`text-sm px-4 py-1 border-4 font-black rounded-full ${gameState.isHacked ? 'border-[#FF6B6B] text-[#FF6B6B] bg-white' : 'border-black text-black bg-white'}`}>
-              {gameState.isHacked ? 'MODIFIED' : 'ORIGINAL'}
-            </span>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -12,7 +12,41 @@ async function startServer() {
 
   // API routes
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", message: "Gimkit Sim-Hack Backend Active" });
+    res.json({ status: "ok", message: "Gimkit Live Tool Backend Active" });
+  });
+
+  // Fetch game info using a Game Code
+  app.get("/api/gimkit/game/:code", async (req, res) => {
+    try {
+      const { code } = req.params;
+      const response = await fetch(`https://www.gimkit.com/api/games/join?gameCode=${code}`);
+      
+      if (!response.ok) {
+        return res.status(response.status).json({ error: "Failed to fetch game info" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Fetch kit details (questions/answers) using a Kit ID
+  app.get("/api/gimkit/kit/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const response = await fetch(`https://www.gimkit.com/api/gimkits/view/${id}`);
+      
+      if (!response.ok) {
+        return res.status(response.status).json({ error: "Failed to fetch kit info" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
   });
 
   // Simulated "Hack" API

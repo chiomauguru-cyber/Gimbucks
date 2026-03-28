@@ -1,5 +1,4 @@
 import { Terminal as TerminalIcon } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { LogEntry } from '../types';
 import { useEffect, useRef } from 'react';
 
@@ -29,27 +28,23 @@ export default function Terminal({ logs }: TerminalProps) {
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-1 font-mono">
-        <AnimatePresence initial={false}>
-          {logs.map((log) => (
-            <motion.div 
-              key={log.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-[12px] flex gap-3"
-            >
-              <span className="opacity-40 shrink-0">[{log.timestamp}]</span>
-              <span className={`
-                ${log.type === 'success' ? 'text-[#6BCB77]' : ''}
-                ${log.type === 'warning' ? 'text-[#FFD93D]' : ''}
-                ${log.type === 'error' ? 'text-[#FF6B6B]' : ''}
-                ${log.type === 'info' ? 'text-[#4D96FF]' : ''}
-              `}>
-                <span className="mr-2 font-bold">{log.type === 'error' ? '✖' : log.type === 'success' ? '✔' : '›'}</span>
-                {log.text}
-              </span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {logs.map((log) => (
+          <div 
+            key={log.id}
+            className="text-[12px] flex gap-3"
+          >
+            <span className="opacity-40 shrink-0">[{log.timestamp}]</span>
+            <span className={`
+              ${log.type === 'success' ? 'text-[#6BCB77]' : ''}
+              ${log.type === 'warning' ? 'text-[#FFD93D]' : ''}
+              ${log.type === 'error' ? 'text-[#FF6B6B]' : ''}
+              ${log.type === 'info' ? 'text-[#4D96FF]' : ''}
+            `}>
+              <span className="mr-2 font-bold">{log.type === 'error' ? '✖' : log.type === 'success' ? '✔' : '›'}</span>
+              {log.text}
+            </span>
+          </div>
+        ))}
         <div ref={logEndRef} />
       </div>
     </section>
